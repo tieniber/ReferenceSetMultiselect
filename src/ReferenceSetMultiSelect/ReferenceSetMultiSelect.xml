@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="ReferenceSetMultiSelect.widget.ReferenceSetMultiSelect" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>ReferenceSetMultiSelect</name>
+    <description>The description of this widget.</description>
+
+    <icon />
+
+    <properties>
+
+		<property key="listEntity" type="entity" required="true">
+			<caption>List entity</caption>
+			<category>Data source</category>
+			<description>The type of entity to display in the list.</description>
+		</property>
+
+		<property key="pathToListen" type="entity" required="false" isPath="yes" pathType="referenceSet" allowNonPersistableEntities="true">
+			<caption>Constraint object </caption>
+			<category>Data source</category>
+			<description>(Optional) Path from context entity to the object that constrains this list.</description>
+		</property>
+		<property key="useConstraint" type="boolean" required="true" defaultValue="false">
+			<caption>Use constraint</caption>
+			<category>Data source</category>
+			<description>Select yes if you want this list to be constrained by an association. No to do a regular database retrieve.</description>
+		</property>
+		<property key="pathFromListener" type="entity" entityProperty="listEntity" required="false" isPath="yes" pathType="reference" allowNonPersistableEntities="true">
+			<caption>Path to constraint object</caption>
+			<category>Data source</category>
+			<description>Path from objects in this list to the object that constraints this list.</description>
+		</property>
+
+		<property key="labelAttribute" type="attribute" entityProperty="listEntity" required="true">
+			<caption>Label attribute</caption>
+			<category>Data source</category>
+			<description>The display attribute to show in the list.</description>
+			<attributeTypes>
+				<attributeType name="String"/>
+			</attributeTypes>
+		</property>
+		<property key="associationToSet" type="entity" required="true" isPath="yes" pathType="referenceSet" allowNonPersistableEntities="true">
+			<caption>Association To Set</caption>
+			<category>Behavior</category>
+			<description>The referenceSet to update as the user makes selections.</description>
+		</property>
+		<property key="onChangemf" type="microflow" required="false" >
+            <caption>On change</caption>
+            <category>Behavior</category>
+            <description>(Optional) Microflow to trigger on change.</description>
+            <returnType type="Void"/>
+        </property>
+    </properties>
+</widget>
