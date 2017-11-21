@@ -48,5 +48,10 @@
             <description>(Optional) Microflow to trigger on change.</description>
             <returnType type="Void"/>
         </property>
+		<property key="multiselect" type="boolean" defaultValue="true" >
+            <caption>Allow multiselect</caption>
+            <category>Behavior</category>
+            <description>Allow multi-select by using the control key.</description>
+        </property>
     </properties>
 </widget>
