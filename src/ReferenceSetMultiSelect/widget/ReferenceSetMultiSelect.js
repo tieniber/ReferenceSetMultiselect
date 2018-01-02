@@ -87,36 +87,57 @@ define([
                     guid: this._contextObj.getGuid(),
                     path: splitPath[0],
                     callback: function(objs) {
-                        dojoLang.hitch(this, this._getListObjects, objs)();
+                        dojoLang.hitch(this, this._getListObjects, objs, false)();
                     }
                 }, this);
             } else {
                 //just xpath
-                mx.data.get({
-                    xpath: "//" + this.listEntity,
-                    callback: function(objs) {
-                        dojoLang.hitch(this, this._setupOptions, objs)();
-                    }
-                }, this);
-            }
+                this._getListObjects([], true);            }
             if (callback) callback();
         },
-        _getListObjects: function(objs) {
-            var curObj, splitPath;
-            for (var i = 0; i < objs.length; i++) {
-                curObj = objs[i];
-                splitPath = this.pathFromListener.split("/");
-                mx.data.get({
-                    guid: curObj.getGuid(),
-                    path: splitPath[0],
-                    callback: function(objs2) {
-                        dojoLang.hitch(this, this._setupOptions, objs2)();
-                    }
-                }, this);
+        _getListObjects: function(objs, allIfEmpty) {
+            var curObj, splitPath,
+            args = {};
+
+            args.callback =  function(objs2) {
+                dojoLang.hitch(this, this._setupOptions, objs2)();
             }
+            args.xpath = "//" + this.listEntity;
+
+            if (objs.length > 0) {
+                //splitPath = this.pathFromListener.split("/");
+                args.xpath = "//" + this.listEntity + "[" + this.pathFromListener + "[";
+                for (var i = 0; i < objs.length; i++) {
+                    curObj = objs[i];
+                    if (i>0) {
+                        args.xpath = args.xpath + " or ";
+                    }
+                    args.xpath = args.xpath + "id='" + curObj.getGuid().toString() + "'";
+                }
+                args.xpath = args.xpath + "]]";
+            } else if (!allIfEmpty) {
+                return;
+            }
+            if (this.sortAttribute) {
+                args.filter = {};
+                args.filter.sort = [ [ this.sortAttribute, this.sortDirection ] ];
+            }
+
+            mx.data.get(args, this);
         },
         _setupOptions: function(objs) {
             var tempOption, curObj, objLabel, objValue;
+
+            //if sorting attribute is specified, sort the array of objs
+            if(this.sortAttribute) {
+                var attr = this.sortAttribute;
+                if (this.sortDirection === "asc") {
+                    objs.sort((a, b) => a.get(attr).toLowerCase().localeCompare(b.get(attr).toLowerCase()));
+                } else {
+                    objs.sort((a, b) => b.get(attr).toLowerCase().localeCompare(a.get(attr).toLowerCase()));
+                }
+            }
+
             for (var i = 0; i < objs.length; i++) {
                 curObj = objs[i];
                 objLabel = curObj.get(this.labelAttribute);
